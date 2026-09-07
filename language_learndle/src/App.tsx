@@ -1,5 +1,10 @@
 function App() {
-  return <p className="underline">Szia!</p>
+  return (
+      <div id="titlebar" className="relative flex h-16 items-center justify-center border-b-4 border-gray-500 bg-[#828493]">
+          <h1 className="text-2xl font-bold">Language Learndle</h1>
+          <p className="absolute right-6">How to play</p>
+      </div>
+  );
 }
 
 export default App
