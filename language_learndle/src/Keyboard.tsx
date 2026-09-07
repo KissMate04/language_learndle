@@ -2,25 +2,9 @@ const CHAR_ENTER = "↩";
 const CHAR_BACKSPACE = "⌫";
 const language : string = "hu";
 
-/*
-.keyboard {
-@apply flex flex-col gap-1;
-}
-.row {
-@apply flex gap-1 justify-center;
-}
-.key {
-@apply w-10 h-12 text-2xl flex items-center justify-center border-[none];
-}
-.key.wide {
-@apply w-16;
-}
-
- */
-
 export default function Keyboard() {
     return (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 font-bold">
             <div className="flex gap-1 justify-center">
                 <Key char="Q" />
                 <Key char="W" />
@@ -81,12 +65,12 @@ type KeyProps = {
 
 function Key(props: KeyProps) {
     if (props.wide) return (
-        <button className="w-16 h-12 text-2xl flex items-center justify-center border-[none] bg-[#828493]">
+        <button className="w-16 h-12 text-4xl flex items-center justify-center border-[none] bg-[#333333] text-white">
             {props.char}
         </button>
     );
     else return (
-        <button className="w-10 h-12 text-2xl flex items-center justify-center border-[none] bg-[#828493]">
+        <button className="w-10 h-12 text-2xl flex items-center justify-center border-[none] bg-[#333333] text-white">
             {props.char}
         </button>
     )
