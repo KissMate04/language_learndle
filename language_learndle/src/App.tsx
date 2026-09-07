@@ -1,5 +1,5 @@
 function App() {
-  return <p>Szia!</p>
+  return <p className="underline">Szia!</p>
 }
 
 export default App
