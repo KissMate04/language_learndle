@@ -1,6 +1,9 @@
 import Board from './Board'
 import Keyboard from './Keyboard'
 
+export const word_length : number = 5;
+export const language : string = "hu";
+
 function App() {
   return (
       <div>
