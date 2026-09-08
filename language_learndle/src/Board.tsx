@@ -1,8 +1,7 @@
 import type {ReactNode} from "react";
 import {word_length} from './App';
 import { useAppSelector} from "./store";
-import {ReactNode} from "react";
-import { wordColor} from "./funcs";
+import { wordColor} from "./scripts";
 
 export default function Board() {
     const input = useAppSelector((s) => s.game.input);

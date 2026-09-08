@@ -1,5 +1,5 @@
-import {PayloadAction, configureStore, createSlice} from "@reduxjs/toolkit";
-import {TypedUseSelectorHook, useSelector} from "react-redux";
+import {type PayloadAction, configureStore, createSlice} from "@reduxjs/toolkit";
+import {type TypedUseSelectorHook, useSelector} from "react-redux";
 import WORD_LIST from "./wordlist.json";
 import {word_length} from '../App';
 
