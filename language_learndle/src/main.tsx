@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
+import { Provider } from "react-redux";
+import { store } from "./store/index.ts";
 
 createRoot(document.getElementById('root')!).render(
     //inside App:
@@ -12,6 +14,8 @@ createRoot(document.getElementById('root')!).render(
         // Win/Lose message
         // Board
     <StrictMode>
-      <App />
+        <Provider store={store}>
+            <App />
+        </Provider>
     </StrictMode>,
 )
