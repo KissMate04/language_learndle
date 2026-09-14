@@ -118,7 +118,7 @@ function Key(props: KeyProps) {
     };
     return (
         <button onClick={handleClick} className={`
-            "w-11.5 h-12.5 text-2xl flex items-center justify-center border-[none] bg-[#333333] text-white"
+            w-11.5 h-12.5 text-2xl flex items-center justify-center border-[none] bg-[#333333] text-white
             ${props.wide && "w-17.5 text-4xl"}
             ${color === "B" && "bg-[#828493]"}
             ${color === "Y" && "bg-yellow-500"}
