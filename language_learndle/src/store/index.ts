@@ -50,6 +50,10 @@ const gameSlice = createSlice({
                state.statusText = `${state.input} is not a valid word`;
                return;
            }
+           if (state.guesses.includes(state.input)) {
+               state.statusText = `You already tried ${state.input}`;
+               return;
+           }
            state.guesses.push(state.input);
            if (state.input == state.target || state.guesses.length > word_length) {
                state.gameOver = true;
