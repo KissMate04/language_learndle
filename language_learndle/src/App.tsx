@@ -1,6 +1,5 @@
 import {useEffect} from "react";
 import {gameAction, useAppSelector} from "./store";
-import WORDLIST from "./store/wordlist.json";
 import {useDispatch} from "react-redux";
 import Board from './Board'
 import Keyboard from './Keyboard'
@@ -10,17 +9,21 @@ export const language : string = "hu";
 
 function App() {
     const dispatch = useDispatch();
-    const gameOver = useAppSelector((s) => s.game.gameOver);
-    const input = useAppSelector((s) => s.game.input);
-    const target = useAppSelector((s) => s.game.target);
+    const statusText = useAppSelector((s) => s.game.statusText);
+
+    useEffect(() => {
+        if (!statusText) return;
+
+        const timer = setTimeout(() => {
+            dispatch(gameAction.clearStatus());
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [statusText, dispatch]);
 
     useEffect(() => {
         dispatch(gameAction.start(Date.now()));
     }, [dispatch]);
-
-    let statusText:string = "";
-    if (gameOver) statusText = target;
-    else if (input.length === 5 && !WORDLIST.valid.includes(input)) statusText = `${input} is not a valid word`;
 
     return (
         <div>

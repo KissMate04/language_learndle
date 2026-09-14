@@ -8,6 +8,7 @@ export type Game = {
   guesses: string[];
   input: string;
   gameOver: boolean;
+  statusText: string;
 };
 
 const initialState: Game = {
@@ -15,6 +16,7 @@ const initialState: Game = {
     guesses: [],
     input: "",
     gameOver: false,
+    statusText: "",
 };
 
 const gameSlice = createSlice({
@@ -29,6 +31,7 @@ const gameSlice = createSlice({
                guesses: [],
                input: "",
                gameOver: false,
+               statusText: "",
            };
        },
        inputLetter(state, action: PayloadAction<string>) {
@@ -43,11 +46,20 @@ const gameSlice = createSlice({
        },
        inputEnter(state) {
            if (state.input.length !== word_length) return;
-           if (!WORD_LIST.valid.includes(state.input)) return;
+           if (!WORD_LIST.valid.includes(state.input)) {
+               state.statusText = `${state.input} is not a valid word`;
+               return;
+           }
            state.guesses.push(state.input);
-           if (state.input == state.target || state.guesses.length == 6)
+           if (state.input == state.target || state.guesses.length > word_length) {
                state.gameOver = true;
+               state.statusText = state.target;
+           }
            state.input = "";
+           return;
+       },
+       clearStatus(state) {
+           state.statusText = "";
        },
    },
 });
