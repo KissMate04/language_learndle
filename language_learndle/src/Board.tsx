@@ -22,7 +22,7 @@ export default function Board() {
                     ${colors[j] === "B" && "bg-[#828493]"}
                     ${colors[j] === "Y" && "bg-yellow-500"}
                     ${colors[j] === "G" && "bg-green-700"}
-                    "w-[55px] h-[55px] text-[#212121] text-3xl flex items-center justify-center bg-[#ababab]"
+                    w-[55px] h-[55px] text-[#212121] text-3xl flex items-center justify-center bg-[#ababab]
                 `}>
                     {guess[j]}
                 </div>
