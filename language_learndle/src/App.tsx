@@ -1,13 +1,15 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {gameAction, useAppSelector} from "./store";
 import {useDispatch} from "react-redux";
 import Board from './Board'
 import Keyboard from './Keyboard'
 
 export const word_length : number = 5;
-export const language : string = "hu";
 
 function App() {
+    const [lanCode, setLanCode] = useState("en");
+    let language: string = "Magyar";
+
     const dispatch = useDispatch();
     const statusText = useAppSelector((s) => s.game.statusText);
     const target = useAppSelector((s) => s.game.target);
@@ -17,7 +19,7 @@ function App() {
 
         const timer = setTimeout(() => {
             dispatch(gameAction.clearStatus());
-        }, 1000);
+        }, 1350);
 
         return () => clearTimeout(timer);
     }, [statusText, dispatch]);
@@ -29,6 +31,12 @@ function App() {
     return (
         <div className="relative">
             <div id="titlebar" className="flex h-16 items-center justify-center border-b-4 border-gray-500 bg-[#828493]">
+                <div className="absolute left-6 border hover:[&>p]:block">
+                    {language}
+                    <p className="hidden hover:bg-blue-900" onClick={() => changeLanguage("English", "en")}>English</p>
+                    <p className="hidden hover:bg-blue-900" onClick={() => changeLanguage("Magyar", "hu")}>Magyar</p>
+                    <p className="hidden hover:bg-blue-900" onClick={() => changeLanguage("Italiano", "it")}>Italiano</p>
+                </div>
                 <h1 className="text-2xl font-bold">Language Learndle</h1>
                 <p className="absolute right-6">{target}</p>
             </div>
@@ -43,10 +51,18 @@ function App() {
             <br/>
 
             <div>
-                <Keyboard />
+                <Keyboard lanCode={lanCode} />
             </div>
         </div>
   );
+
+    function changeLanguage(lan: string, code: string) {
+        language = lan;
+        setLanCode(code);
+    }
+
 }
+
+
 
 export default App

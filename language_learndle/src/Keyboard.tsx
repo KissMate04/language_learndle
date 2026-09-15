@@ -2,14 +2,14 @@ import {useDispatch} from "react-redux";
 import {gameAction, useAppSelector} from "./store";
 import {useEffect} from "react";
 import {keyColor} from "./scripts.ts";
-import {language} from './App';
+//import {lanCode} from './App';
 
 const CHAR_ENTER = "↩";
 const CHAR_BACKSPACE = "⌫";
 const CHAR_CODE_A = "A".charCodeAt(0);
 const CHAR_CODE_Z = "Z".charCodeAt(0);
 
-export default function Keyboard() {
+export default function Keyboard({lanCode}: {lanCode: string}) {
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -44,12 +44,14 @@ export default function Keyboard() {
                 <Key char="E" />
                 <Key char="R" />
                 <Key char="T" />
-                {language=="en" && <Key char="Y" />}
-                {language=="hu" && <Key char="Z" />}
+                {(lanCode=="en" || lanCode=="it") && <Key char="Y" />}
+                {lanCode=="hu" && <Key char="Z" />}
                 <Key char="U" />
                 <Key char="I" />
                 <Key char="O" />
                 <Key char="P" />
+                {lanCode=="it" && <Key char="É" />}
+                {lanCode=="it" && <Key char="È" />}
             </div>
             <div className="flex gap-1 justify-center">
                 <Key char="A" />
@@ -61,23 +63,27 @@ export default function Keyboard() {
                 <Key char="J" />
                 <Key char="K" />
                 <Key char="L" />
-                {language=="hu" && <Key char="É" />}
+                {lanCode=="hu" && <Key char="É" />}
+                {lanCode=="it" && <Key char="Ó" />}
+                {lanCode=="it" && <Key char="Ò" />}
+                {lanCode=="it" && <Key char="Ù" />}
             </div>
             <div className="flex gap-1 justify-center">
-                {language=="hu" && <Key char="Í" />}
-                {language=="en" && <Key char={CHAR_ENTER} wide />}
-                {language=="en" && <Key char="Z" />}
-                {language=="hu" && <Key char="Y" />}
+                {lanCode=="hu" && <Key char="Í" />}
+                {(lanCode=="en" || lanCode=="it") && <Key char={CHAR_BACKSPACE} wide />}
+                {(lanCode=="en" || lanCode=="it") && <Key char="Z" />}
+                {lanCode=="hu" && <Key char="Y" />}
                 <Key char="X" />
                 <Key char="C" />
                 <Key char="V" />
                 <Key char="B" />
                 <Key char="N" />
                 <Key char="M" />
-                {language=="hu" && <Key char="Á" />}
-                {language=="en" && <Key char={CHAR_BACKSPACE} wide />}
+                {(lanCode=="hu" || lanCode=="it") && <Key char="Á" />}
+                {lanCode=="it" && <Key char="Ì" />}
+                {(lanCode=="en" || lanCode=="it") && <Key char={CHAR_ENTER} wide />}
             </div>
-            {language=="hu" && <div className="flex gap-1 justify-center">
+            {lanCode=="hu" && <div className="flex gap-1 justify-center">
                 <Key char={CHAR_BACKSPACE} wide />
                 <Key char="Ó" />
                 <Key char="Ö" />
