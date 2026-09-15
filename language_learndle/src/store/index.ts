@@ -65,6 +65,14 @@ const gameSlice = createSlice({
        clearStatus(state) {
            state.statusText = "";
        },
+       newGame(state, action: PayloadAction<number>) {
+           const targetWords = WORD_LIST.target;
+           state.target = targetWords[action.payload % targetWords.length];
+           state.guesses = [];
+           state.input = "";
+           state.gameOver = false;
+           state.statusText = "";
+       }
    },
 });
 

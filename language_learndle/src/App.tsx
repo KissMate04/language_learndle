@@ -10,6 +10,7 @@ export const language : string = "hu";
 function App() {
     const dispatch = useDispatch();
     const statusText = useAppSelector((s) => s.game.statusText);
+    const target = useAppSelector((s) => s.game.target);
 
     useEffect(() => {
         if (!statusText) return;
@@ -26,15 +27,18 @@ function App() {
     }, [dispatch]);
 
     return (
-        <div>
-            <div id="titlebar" className="relative flex h-16 items-center justify-center border-b-4 border-gray-500 bg-[#828493]">
+        <div className="relative">
+            <div id="titlebar" className="flex h-16 items-center justify-center border-b-4 border-gray-500 bg-[#828493]">
                 <h1 className="text-2xl font-bold">Language Learndle</h1>
-                <p className="absolute right-6">How to play</p>
+                <p className="absolute right-6">{target}</p>
             </div>
-            <br/>
-            <div className="relative flex items-center justify-center">
+            <div className="w-fit mx-auto items-center justify-center">
+                <div className="grid grid-cols-2 ">
+                    <button className="text-left ">hint</button>
+                    <button className="text-right" onClick={() => dispatch(gameAction.newGame(Date.now()))}>new word</button>
+                </div>
                 <Board />
-                ${statusText !== "" && <p className="absolute text-4xl bg-orange-400 font-bold p-2 rounded-2xl">{statusText}</p>}
+                {statusText !== "" && <p className="absolute left-1/2 translate-x-[-50%] top-1/3 text-2xl bg-orange-400 font-bold p-2 rounded-2xl">{statusText}</p>}
             </div>
             <br/>
 
