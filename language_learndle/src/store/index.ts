@@ -1,7 +1,6 @@
 import {type PayloadAction, configureStore, createSlice} from "@reduxjs/toolkit";
 import {type TypedUseSelectorHook, useSelector} from "react-redux";
 import WORD_LIST from "./wordlist.json";
-import {word_length} from '../App';
 
 export type Game = {
   target: string;
@@ -35,7 +34,7 @@ const gameSlice = createSlice({
            };
        },
        inputLetter(state, action: PayloadAction<string>) {
-           if (state.input.length < word_length) {
+           if (state.input.length < state.target.length) {
                state.input += action.payload;
            }
        },
@@ -45,7 +44,7 @@ const gameSlice = createSlice({
            }
        },
        inputEnter(state) {
-           if (state.input.length !== word_length) return;
+           if (state.input.length !== state.target.length) return;
            if (!WORD_LIST.valid.includes(state.input)) {
                state.statusText = `${state.input} is not a valid word`;
                return;
@@ -55,7 +54,7 @@ const gameSlice = createSlice({
                return;
            }
            state.guesses.push(state.input);
-           if (state.input == state.target || state.guesses.length > word_length) {
+           if (state.input == state.target || state.guesses.length > state.target.length) {
                state.gameOver = true;
                state.statusText = state.target;
            }

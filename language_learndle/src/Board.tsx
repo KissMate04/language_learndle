@@ -1,5 +1,4 @@
 import type {ReactNode} from "react";
-import {word_length} from './App';
 import { useAppSelector} from "./store";
 import { wordColor} from "./scripts";
 
@@ -34,7 +33,7 @@ export default function Board() {
     // Input letters
     const showInput = !gameOver;
     if (showInput) {
-        for (let i = 0; i < word_length; i++) {
+        for (let i = 0; i < target.length; i++) {
             const cell = (
                 <div key={`input-${i}`} className="w-[55px] h-[55px] box-border text-[#212121] text-3xl flex items-center justify-center border-2 border-[#4f4f4f] bg-[#ababab]">
                     {input[i] ?? ""}
@@ -47,7 +46,7 @@ export default function Board() {
 
     // Empty cells
     const emptyRows = 6 - (showInput ? 1 : 0) - guesses.length;
-    for (let i = 0; i < emptyRows * word_length; i++) {
+    for (let i = 0; i < emptyRows * target.length; i++) {
         const cell = <div key={`empty-${i}`} className="w-[55px] h-[55px] box-border text-[#212121] text-3xl flex items-center justify-center border-2 border-[#4f4f4f] bg-[#ababab]"></div>;
         cells.push(cell);
     }

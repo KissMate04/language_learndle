@@ -4,10 +4,8 @@ import {useDispatch} from "react-redux";
 import Board from './Board'
 import Keyboard from './Keyboard'
 
-export const word_length : number = 5;
-
 function App() {
-    const [lanCode, setLanCode] = useState("en");
+    const [lanCode, setLanCode] = useState("hu");
     let language: string = "Magyar";
 
     const dispatch = useDispatch();
