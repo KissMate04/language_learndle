@@ -19,8 +19,20 @@ export default function Keyboard({lanCode}: {lanCode: string}) {
                 return;
             } else if (
                 key.length === 1 &&
-                key.charCodeAt(0) >= CHAR_CODE_A &&
-                key.charCodeAt(0) <= CHAR_CODE_Z
+                (key.charCodeAt(0) >= CHAR_CODE_A && key.charCodeAt(0) <= CHAR_CODE_Z ||
+                key.charCodeAt(0) == 'Ö'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Ü'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Ó'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'É'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Á'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Ű'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Í'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Ù'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Ò'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'Ì'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'È'.charCodeAt(0) ||
+                    key.charCodeAt(0) == 'À'.charCodeAt(0)
+                )
             ) {
                 e.preventDefault();
                 dispatch(gameAction.inputLetter(key));
@@ -107,7 +119,19 @@ function Key(props: KeyProps) {
     const target = useAppSelector((s) => s.game.target);
     const guesses = useAppSelector((s) => s.game.guesses);
     const charCode = props.char.charCodeAt(0);
-    const isAlphabet = charCode >= CHAR_CODE_A && charCode <= CHAR_CODE_Z;
+    const isAlphabet = charCode >= CHAR_CODE_A && charCode <= CHAR_CODE_Z ||
+        charCode == 'Ö'.charCodeAt(0) ||
+        charCode == 'Ü'.charCodeAt(0) ||
+        charCode == 'Ó'.charCodeAt(0) ||
+        charCode == 'É'.charCodeAt(0) ||
+        charCode == 'Á'.charCodeAt(0) ||
+        charCode == 'Ű'.charCodeAt(0) ||
+        charCode == 'Í'.charCodeAt(0) ||
+        charCode == 'Ù'.charCodeAt(0) ||
+        charCode == 'Ò'.charCodeAt(0) ||
+        charCode == 'Ì'.charCodeAt(0) ||
+        charCode == 'È'.charCodeAt(0) ||
+        charCode == 'À'.charCodeAt(0);
     let color = "";
     if (isAlphabet) {
         color = keyColor(props.char, target, guesses);
