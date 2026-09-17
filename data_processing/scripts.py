@@ -19,7 +19,7 @@ def get_words_from_csv(file_path):
         for row in reader:
             if len(row[1]) >= 3 and "'" not in row[1] and "-" not in row[1]:
                     words.append(row[1])
-    print("Total number of words: ",len(words))
+
     return words
 
 def lemmatize(wordlist, package):
@@ -38,42 +38,67 @@ def lemmatize(wordlist, package):
             lemmatized_words[word] = doc[0].lemma_
     return lemmatized_words
 
-def dict_test(wordlist):
-    wanted = set(wordlist.values())
-    data = {}
-    print("Total number of words to look for: ", len(wanted))
-    """
-    print("\nWORD:", entry["word"])
-                print("POS:", entry.get("pos"))
+def json_builder(valid, target, valid_json_path, target_json_path, dict_path):
+    # Working with the sets is faster. Maybe
+    valid_wanted = set(valid.values())
+    target_wanted = set(target.values())
+    valid_data = {}
+    target_data = {}
 
-                for sense in entry.get("senses", []):
-                    print("DEFINITION:", sense.get("glosses", []))
-    """
-
-    with open("data_processing/dictionaries/kaikki.org-dictionary-English-words.jsonl", encoding="utf-8") as f:
+    with open(dict_path, encoding="utf-8") as f:
         for line in f:
             entry = json.loads(line)
-            if entry["word"] in wanted:
-                keys = [key for key, val in wordlist.items() if val == entry["word"]]
+            # Valid check
+            if entry["word"] in valid_wanted:
+                keys = [key for key, val in valid.items() if val == entry["word"]]
                 definitions = entry.get("senses", [{}])[0].get("glosses")
                 for key in keys:
-                    entry_data = data.setdefault(key, {"lemma": entry["word"], "pos": {}})
+                    entry_data = valid_data.setdefault(key, {"lemma": entry["word"], "pos": {}})
                     entry_data["pos"].setdefault(entry["pos"], definitions)
-                print(data[key])
-    json_data = json.dumps(data)
-    with open("data_processing/wordlists/english.json", "w", encoding="utf-8") as outfile:
+            # Target check
+            if entry["word"] in target_wanted:
+                keys = [key for key, val in valid.items() if val == entry["word"]]
+                definitions = entry.get("senses", [{}])[0].get("glosses")
+                for key in keys:
+                    entry_data = target_data.setdefault(key, {"lemma": entry["word"], "pos": {}})
+                    entry_data["pos"].setdefault(entry["pos"], definitions)
+    json_data = json.dumps(valid_data)
+    with open(valid_json_path, "w", encoding="utf-8") as outfile:
+        outfile.write(json_data)
+    json_data = json.dumps(target_data)
+    with open(target_json_path, "w", encoding="utf-8") as outfile:
         outfile.write(json_data)
 
+
 def main():
-    valid_words = get_words_from_csv('data_processing/rawdata/english-most-common-words.csv')
-    target_words = valid_words[0:1000]
-    print("target words: ", target_words[0:10])
-    valid_lemma = lemmatize(valid_words, "en_core_web_sm")
-    target_lemma = lemmatize(target_words, "en_core_web_sm")
-    print("--------------------------------------------------")
-    print("--------------------------------------------------")
-    print("--------------------------------------------------")
-    dict_test(target_lemma)
+    language = input("Enter the language (en/it): ")
+    if language == "en":
+        most_common_path = 'data_processing/rawdata/english-most-common-words.csv'
+        package_name = 'en_core_web_sm'
+        target_json_path = "language_learndle/src/store/english_target.json"
+        valid_json_path = "language_learndle/src/store/english_valid.json"
+        dict_path = "data_processing/dictionaries/kaikki.org-dictionary-English-words.jsonl"
+    elif language == "it":
+        most_common_path = 'data_processing/rawdata/italian-most-common-words.csv'
+        package_name = 'it_core_news_sm'
+        target_json_path = "language_learndle/src/store/italian_target.json"
+        valid_json_path = "language_learndle/src/store/italian_valid.json"
+        dict_path = "coming soon"
+    else:
+        most_common_path = "Wrong language, I must crash"
+        package_name = "You already crashed"
+        target_json_path = "Why are you reading these?"
+        valid_json_path = "Just go back and pick another language"
+        dict_path = "No dictionary for you"
+
+    valid_most_common = get_words_from_csv(most_common_path)
+    target_most_common = valid_most_common[0:1000]
+    print("sample of targets: ", target_most_common[0:5])
+    print("Total number of valid words: ", len(valid_most_common))
+    valid_lemma = lemmatize(valid_most_common, package_name)
+    target_lemma = lemmatize(target_most_common, package_name)
+    print("--- lemmatization complete ---")
+    json_builder(valid_lemma, target_lemma, valid_json_path, target_json_path, dict_path)
 
 if __name__ == "__main__":
     main()
