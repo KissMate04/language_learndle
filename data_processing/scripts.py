@@ -38,10 +38,10 @@ def lemmatize(wordlist, package):
             lemmatized_words[word] = doc[0].lemma_
     return lemmatized_words
 
-def json_builder(valid, target, valid_json_path, target_json_path, dict_path):
+def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
     # Working with the sets is faster. Maybe
-    valid_wanted = set(valid.values())
-    target_wanted = set(target.values())
+    lemmas_wanted = set(lemmas.values())
+    valid = {}
     valid_data = {}
     target_data = {}
     useful_pos = ["noun", "verb", "adj", "adv"]
@@ -49,23 +49,28 @@ def json_builder(valid, target, valid_json_path, target_json_path, dict_path):
     with open(dict_path, encoding="utf-8") as f:
         for line in f:
             entry = json.loads(line)
-            if entry["pos"] not in useful_pos:
+            try:
+                if len(entry["word"]) < 3 or "'" in entry["word"] or "-" in entry["word"]:
+                    continue
+
+                if entry["pos"] not in useful_pos:
+                    continue
+
+                definitions = entry.get("senses", [{}])[0].get("glosses")
+
+                # target check
+                if entry["word"].lower() in lemmas_wanted:
+                    entry_data = target_data.setdefault(entry["word"], {"pos": {}})
+                    entry_data["pos"].setdefault(entry["pos"], definitions)
+                # add to valid words
+                valid[entry["word"]] = entry["word"]
+                entry_data = valid_data.setdefault(entry["word"], {"pos": {}})
+                entry_data["pos"].setdefault(entry["pos"], definitions)
+            except KeyError:
                 continue
 
-            definitions = entry.get("senses", [{}])[0].get("glosses")
-
-            # Valid check
-            if entry["word"] in valid_wanted:
-                entry_data = valid_data.setdefault(entry["word"], {"lemma": entry["word"], "pos": {}})
-                entry_data["pos"].setdefault(entry["pos"], definitions)
-
-            # Target check
-            if entry["word"] in target_wanted:
-                entry_data = target_data.setdefault(entry["word"], {"lemma": entry["word"], "pos": {}})
-                entry_data["pos"].setdefault(entry["pos"], definitions)
-
     valid_json= {"words": valid, "entries": valid_data}
-    target_json= {"words": target, "entries": target_data}
+    target_json= {"words": lemmas, "entries": target_data}
     json_data = json.dumps(valid_json)
     with open(valid_json_path, "w", encoding="utf-8") as outfile:
         outfile.write(json_data)
@@ -81,7 +86,7 @@ def main():
         package_name = 'en_core_web_sm'
         target_json_path = "language_learndle/src/store/english_target.json"
         valid_json_path = "language_learndle/src/store/english_valid.json"
-        dict_path = "data_processing/dictionaries/kaikki.org-dictionary-English-words.jsonl"
+        dict_path = "data_processing/dictionaries/simple-extract.jsonl"
     elif language == "it":
         most_common_path = 'data_processing/rawdata/italian-most-common-words.csv'
         package_name = 'it_core_news_sm'
@@ -95,15 +100,12 @@ def main():
         valid_json_path = "Just go back and pick another language"
         dict_path = "No dictionary for you"
 
-    valid_most_common = get_words_from_csv(most_common_path)
-    print("Found ", len(valid_most_common), " valid words in the most common words list.")
-    print("sample of valid words: ", valid_most_common[0:5])
-    # valid list is ordered by most common.
-    target_most_common = valid_most_common[0:1000]
-    valid_lemma = lemmatize(valid_most_common, package_name)
-    target_lemma = lemmatize(target_most_common, package_name)
+    most_common_words = get_words_from_csv(most_common_path)
+    print("--- Number of accepted target words: ",len(most_common_words)," ---")
+    lemmas = lemmatize(most_common_words, package_name)
     print("--- lemmatization complete ---")
-    json_builder(valid_lemma, target_lemma, valid_json_path, target_json_path, dict_path)
+    json_builder(lemmas, valid_json_path, target_json_path, dict_path)
+    print("--- json files created ---")
 
 if __name__ == "__main__":
     main()
