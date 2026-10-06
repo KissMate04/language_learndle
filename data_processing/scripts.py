@@ -44,28 +44,32 @@ def json_builder(valid, target, valid_json_path, target_json_path, dict_path):
     target_wanted = set(target.values())
     valid_data = {}
     target_data = {}
+    useful_pos = ["noun", "verb", "adj", "adv"]
 
     with open(dict_path, encoding="utf-8") as f:
         for line in f:
             entry = json.loads(line)
+            if entry["pos"] not in useful_pos:
+                continue
+
+            definitions = entry.get("senses", [{}])[0].get("glosses")
+
             # Valid check
             if entry["word"] in valid_wanted:
-                keys = [key for key, val in valid.items() if val == entry["word"]]
-                definitions = entry.get("senses", [{}])[0].get("glosses")
-                for key in keys:
-                    entry_data = valid_data.setdefault(key, {"lemma": entry["word"], "pos": {}})
-                    entry_data["pos"].setdefault(entry["pos"], definitions)
+                entry_data = valid_data.setdefault(entry["word"], {"lemma": entry["word"], "pos": {}})
+                entry_data["pos"].setdefault(entry["pos"], definitions)
+
             # Target check
             if entry["word"] in target_wanted:
-                keys = [key for key, val in valid.items() if val == entry["word"]]
-                definitions = entry.get("senses", [{}])[0].get("glosses")
-                for key in keys:
-                    entry_data = target_data.setdefault(key, {"lemma": entry["word"], "pos": {}})
-                    entry_data["pos"].setdefault(entry["pos"], definitions)
-    json_data = json.dumps(valid_data)
+                entry_data = target_data.setdefault(entry["word"], {"lemma": entry["word"], "pos": {}})
+                entry_data["pos"].setdefault(entry["pos"], definitions)
+
+    valid_json= {"words": valid, "entries": valid_data}
+    target_json= {"words": target, "entries": target_data}
+    json_data = json.dumps(valid_json)
     with open(valid_json_path, "w", encoding="utf-8") as outfile:
         outfile.write(json_data)
-    json_data = json.dumps(target_data)
+    json_data = json.dumps(target_json)
     with open(target_json_path, "w", encoding="utf-8") as outfile:
         outfile.write(json_data)
 
@@ -92,9 +96,10 @@ def main():
         dict_path = "No dictionary for you"
 
     valid_most_common = get_words_from_csv(most_common_path)
+    print("Found ", len(valid_most_common), " valid words in the most common words list.")
+    print("sample of valid words: ", valid_most_common[0:5])
+    # valid list is ordered by most common.
     target_most_common = valid_most_common[0:1000]
-    print("sample of targets: ", target_most_common[0:5])
-    print("Total number of valid words: ", len(valid_most_common))
     valid_lemma = lemmatize(valid_most_common, package_name)
     target_lemma = lemmatize(target_most_common, package_name)
     print("--- lemmatization complete ---")
