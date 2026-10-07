@@ -31,12 +31,12 @@ function App() {
             <div id="titlebar" className="flex h-16 items-center justify-center border-b-4 border-gray-500 bg-[#828493]">
                 <div className="absolute left-6 border hover:[&>p]:block">
                     {language}
-                    <p className="hidden hover:bg-blue-900" onClick={() => changeLanguage("English", "en")}>English</p>
-                    <p className="hidden hover:bg-blue-900" onClick={() => changeLanguage("Magyar", "hu")}>Magyar</p>
-                    <p className="hidden hover:bg-blue-900" onClick={() => changeLanguage("Italiano", "it")}>Italiano</p>
+                    <p className="hidden hover:bg-blue-400" onClick={() => changeLanguage("English", "en")}>English</p>
+                    <p className="hidden hover:bg-blue-400" onClick={() => changeLanguage("Magyar", "hu")}>Magyar</p>
+                    <p className="hidden hover:bg-blue-400" onClick={() => changeLanguage("Italiano", "it")}>Italiano</p>
                 </div>
                 <h1 className="text-2xl font-bold">Language Learndle</h1>
-                <p className="absolute right-6">{target}</p>
+                <p className="absolute right-6">How to play</p>
             </div>
             <div className="w-fit mx-auto items-center justify-center">
                 <div className="grid grid-cols-2 ">
@@ -60,7 +60,5 @@ function App() {
     }
 
 }
-
-
 
 export default App

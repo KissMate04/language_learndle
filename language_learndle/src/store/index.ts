@@ -10,6 +10,8 @@ type WordData = {words: string[]; entries: Record<string, WordEntry>};
 const validData = EN_VALID as WordData;
 const targetData = EN_TARGET as WordData;
 
+export const MAX_GUESSES = 6;
+
 export type Game = {
   target: string;
   guesses: string[];
@@ -44,16 +46,19 @@ const gameSlice = createSlice({
            };
        },
        inputLetter(state, action: PayloadAction<string>) {
+           if (state.gameOver) return;
            if (state.input.length < state.target.length) {
                state.input += action.payload;
            }
        },
        inputBackspace(state) {
+           if (state.gameOver) return;
            if (state.input.length > 0) {
                state.input = state.input.substring(0, state.input.length - 1);
            }
        },
        inputEnter(state) {
+           if (state.gameOver) return;
            console.log("input word: ", state.input, " target word: ", state.target);
            if (state.input.length !== state.target.length) return;
            console.log("input: ", state.input);
@@ -66,7 +71,7 @@ const gameSlice = createSlice({
                return;
            }
            state.guesses.push(state.input);
-           if (state.input == state.target || state.guesses.length > state.target.length) {
+           if (state.input == state.target || state.guesses.length >= MAX_GUESSES) {
                state.gameOver = true;
                state.statusText = state.target;
            }

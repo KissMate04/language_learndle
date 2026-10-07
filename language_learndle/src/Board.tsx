@@ -1,5 +1,5 @@
 import type {ReactNode} from "react";
-import { useAppSelector} from "./store";
+import { useAppSelector, MAX_GUESSES} from "./store";
 import { wordColor} from "./scripts";
 
 export default function Board() {
@@ -45,7 +45,7 @@ export default function Board() {
 
 
     // Empty cells
-    const emptyRows = 6 - (showInput ? 1 : 0) - guesses.length;
+    const emptyRows = MAX_GUESSES - (showInput ? 1 : 0) - guesses.length;
     for (let i = 0; i < emptyRows * target.length; i++) {
         const cell = <div key={`empty-${i}`} className="w-[55px] h-[55px] box-border text-[#212121] text-3xl flex items-center justify-center border-2 border-[#4f4f4f] bg-[#ababab]"></div>;
         cells.push(cell);
