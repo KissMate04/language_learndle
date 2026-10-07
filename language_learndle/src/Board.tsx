@@ -7,7 +7,7 @@ export default function Board() {
     const target = useAppSelector((s) => s.game.target);
     const guesses = useAppSelector((s) => s.game.guesses);
     const gameOver = useAppSelector((s) => s.game.gameOver);
-
+    console.log("Game target: ",target);
     const cells: ReactNode[] = [];
 
     // Guessed letters
@@ -51,5 +51,8 @@ export default function Board() {
         cells.push(cell);
     }
 
-    return <div className="grid grid-cols-5 gap-[5px] w-fit mx-auto">{cells}</div>;
+    return <div
+        className="grid grid-cols-[repeat(var(--cols),minmax(0,1fr))] gap-[5px] w-fit mx-auto"
+        style={{"--cols": target.length} as React.CSSProperties}
+    >{cells}</div>;
 }

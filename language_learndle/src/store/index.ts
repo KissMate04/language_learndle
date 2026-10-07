@@ -1,6 +1,14 @@
 import {type PayloadAction, configureStore, createSlice} from "@reduxjs/toolkit";
 import {type TypedUseSelectorHook, useSelector} from "react-redux";
-import WORD_LIST from "./wordlist.json";
+//import WORD_LIST from "./wordlist.json";
+import EN_VALID from "./english_valid.json";
+import EN_TARGET from "./english_target.json";
+
+type WordEntry = {lemma: string; pos: Record<string, string[]>};
+type WordData = {words: string[]; entries: Record<string, WordEntry>};
+
+const validData = EN_VALID as WordData;
+const targetData = EN_TARGET as WordData;
 
 export type Game = {
   target: string;
@@ -9,6 +17,8 @@ export type Game = {
   gameOver: boolean;
   statusText: string;
 };
+
+const VALID_WORDS = new Set(validData.words);
 
 const initialState: Game = {
     target: "0",
@@ -23,8 +33,8 @@ const gameSlice = createSlice({
    initialState,
    reducers: {
        start(_state, action: PayloadAction<number>) {
-           const targetWords = WORD_LIST.target;
-           const target = targetWords[action.payload % targetWords.length];
+           console.log(action.payload);
+           const target = targetData.words[action.payload % targetData.words.length].toUpperCase();
            return {
                target,
                guesses: [],
@@ -44,8 +54,10 @@ const gameSlice = createSlice({
            }
        },
        inputEnter(state) {
+           console.log("input word: ", state.input, " target word: ", state.target);
            if (state.input.length !== state.target.length) return;
-           if (!WORD_LIST.valid.includes(state.input)) {
+           console.log("input: ", state.input);
+           if (!VALID_WORDS.has(state.input.toLowerCase())) {
                state.statusText = `${state.input} is not a valid word`;
                return;
            }
@@ -65,8 +77,7 @@ const gameSlice = createSlice({
            state.statusText = "";
        },
        newGame(state, action: PayloadAction<number>) {
-           const targetWords = WORD_LIST.target;
-           state.target = targetWords[action.payload % targetWords.length];
+           state.target = targetData.words[action.payload % targetData.words.length].toUpperCase();
            state.guesses = [];
            state.input = "";
            state.gameOver = false;

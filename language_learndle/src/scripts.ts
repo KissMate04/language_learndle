@@ -3,7 +3,7 @@ export function wordColor(target: string, guess: string): string {
 
     // Find green letters
     const unmatched = new Map<string, number>();
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < target.length; i++) {
         if (guess[i] === target[i]) {
             colors[i] = "G";
         } else {
@@ -13,7 +13,7 @@ export function wordColor(target: string, guess: string): string {
     }
 
     // Find yellow letters
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < target.length; i++) {
         if (colors[i] === "G") {
             continue;
         }
@@ -43,7 +43,7 @@ export function keyColor(
 
     const colors = guesses.map((guess) => wordColor(target, guess));
     for (let i = 0; i < guesses.length; i++) {
-        for (let j = 0; j < 5; j++) {
+        for (let j = 0; j < target.length; j++) {
             if (guesses[i][j] === key) {
                 const color = colors[i][j];
                 if (COLOR_MAP.get(color)! > COLOR_MAP.get(bestColor)!) {
