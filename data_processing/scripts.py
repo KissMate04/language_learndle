@@ -41,7 +41,7 @@ def lemmatize(wordlist, package):
 def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
     # Working with the sets is faster. Maybe
     lemmas_wanted = set(lemmas.values())
-    valid = {}
+    valid = []
     valid_data = {}
     target_data = {}
     useful_pos = ["noun", "verb", "adj", "adv"]
@@ -63,14 +63,15 @@ def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
                     entry_data = target_data.setdefault(entry["word"], {"pos": {}})
                     entry_data["pos"].setdefault(entry["pos"], definitions)
                 # add to valid words
-                valid[entry["word"]] = entry["word"]
+                valid.append(entry["word"])
                 entry_data = valid_data.setdefault(entry["word"], {"pos": {}})
                 entry_data["pos"].setdefault(entry["pos"], definitions)
+
             except KeyError:
                 continue
 
     valid_json= {"words": valid, "entries": valid_data}
-    target_json= {"words": lemmas, "entries": target_data}
+    target_json= {"words": list(lemmas.values()), "entries": target_data}
     json_data = json.dumps(valid_json)
     with open(valid_json_path, "w", encoding="utf-8") as outfile:
         outfile.write(json_data)
