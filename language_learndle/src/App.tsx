@@ -3,6 +3,7 @@ import {gameAction, useAppSelector} from "./store";
 import {useDispatch} from "react-redux";
 import Board from './Board'
 import Keyboard from './Keyboard'
+import Definitions from './Definitions'
 
 function App() {
     const [lanCode, setLanCode] = useState("hu");
@@ -43,8 +44,12 @@ function App() {
                     <button className="text-left ">hint</button>
                     <button className="text-right" onClick={() => dispatch(gameAction.newGame(Date.now()))}>new word</button>
                 </div>
-                <Board />
-                {statusText !== "" && <p className="absolute left-1/2 translate-x-[-50%] top-1/3 text-2xl bg-orange-400 font-bold p-2 rounded-2xl">{statusText}</p>}
+                <div className="grid grid-cols-3">
+                    <div></div>
+                    <Board />
+                    {statusText !== "" && <p className="absolute left-1/2 translate-x-[-50%] top-1/3 text-2xl bg-orange-400 font-bold p-2 rounded-2xl">{statusText}</p>}
+                    <Definitions />
+                </div>
             </div>
             <br/>
 
