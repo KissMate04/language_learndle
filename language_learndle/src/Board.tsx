@@ -7,7 +7,6 @@ export default function Board() {
     const target = useAppSelector((s) => s.game.target);
     const guesses = useAppSelector((s) => s.game.guesses);
     const gameOver = useAppSelector((s) => s.game.gameOver);
-    console.log("Game target: ",target);
     const cells: ReactNode[] = [];
 
     // Guessed letters

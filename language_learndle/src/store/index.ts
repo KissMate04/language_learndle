@@ -4,26 +4,30 @@ import {type TypedUseSelectorHook, useSelector} from "react-redux";
 import EN_VALID from "./english_valid.json";
 import EN_TARGET from "./english_target.json";
 
-type WordEntry = {lemma: string; pos: Record<string, string[]>};
-type WordData = {words: string[]; entries: Record<string, WordEntry>};
+type Pos = "adj" | "noun" | "verb" | "adv";
+type WordEntry = {pos: Partial<Record<Pos, string[]>>};
+type WordData = Record<string, WordEntry>;
+const validData: WordData = EN_VALID as WordData;
 
-const validData = EN_VALID as WordData;
-const targetData = EN_TARGET as WordData;
 
 export const MAX_GUESSES = 6;
 
+export type Definition = {pos: Pos; text: string};
+
+export const POS_ORDER: Pos[] = ["noun", "verb", "adj", "adv"];
+
 export type Game = {
   target: string;
+  definitions: Definition[], //definitions for the guesses
   guesses: string[];
   input: string;
   gameOver: boolean;
   statusText: string;
 };
 
-const VALID_WORDS = new Set(validData.words);
-
 const initialState: Game = {
     target: "0",
+    definitions: [],
     guesses: [],
     input: "",
     gameOver: false,
@@ -35,10 +39,9 @@ const gameSlice = createSlice({
    initialState,
    reducers: {
        start(_state, action: PayloadAction<number>) {
-           console.log(action.payload);
-           const target = targetData.words[action.payload % targetData.words.length].toUpperCase();
            return {
-               target,
+               target: pickTarget(action.payload),
+               definitions: [],
                guesses: [],
                input: "",
                gameOver: false,
@@ -61,8 +64,7 @@ const gameSlice = createSlice({
            if (state.gameOver) return;
            console.log("input word: ", state.input, " target word: ", state.target);
            if (state.input.length !== state.target.length) return;
-           console.log("input: ", state.input);
-           if (!VALID_WORDS.has(state.input.toLowerCase())) {
+           if (!isValidWord(state.input.toLowerCase())) {
                state.statusText = `${state.input} is not a valid word`;
                return;
            }
@@ -82,7 +84,8 @@ const gameSlice = createSlice({
            state.statusText = "";
        },
        newGame(state, action: PayloadAction<number>) {
-           state.target = targetData.words[action.payload % targetData.words.length].toUpperCase();
+           state.target = pickTarget(action.payload);
+           state.definitions = [];
            state.guesses = [];
            state.input = "";
            state.gameOver = false;
@@ -90,6 +93,20 @@ const gameSlice = createSlice({
        }
    },
 });
+
+export function isValidWord(word: string): boolean {
+    return Object.hasOwn(validData, word);
+}
+
+export function getDefinitions(word: string): WordEntry | undefined {
+    return validData[word];
+}
+
+function pickTarget(index: number) {
+    const word = EN_TARGET[index % EN_TARGET.length];
+    console.log("new game target chosen: ",word, ". Called from pickTarget in index.ts");
+    return word.toUpperCase();
+}
 
 export const gameAction = gameSlice.actions;
 export const store = configureStore({
