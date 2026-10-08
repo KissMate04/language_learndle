@@ -43,13 +43,15 @@ def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
     lemmas_wanted = set(lemmas.values())
     valid = []
     valid_data = {}
-    target_data = {}
+    target = []
     useful_pos = ["noun", "verb", "adj", "adv"]
 
     with open(dict_path, encoding="utf-8") as f:
         for line in f:
             entry = json.loads(line)
             try:
+                if entry["lang_code"] != "en":
+                    continue
                 if len(entry["word"]) < 3 or "'" in entry["word"] or "-" in entry["word"]:
                     continue
 
@@ -60,18 +62,16 @@ def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
 
                 # target check
                 if entry["word"].lower() in lemmas_wanted:
-                    entry_data = target_data.setdefault(entry["word"], {"pos": {}})
-                    entry_data["pos"].setdefault(entry["pos"], definitions)
+                    target.append(entry["word"])
                 # add to valid words
-                valid.append(entry["word"])
-                entry_data = valid_data.setdefault(entry["word"], {"pos": {}})
+                entry_data = valid_data.setdefault(entry["word"].lower(), {"pos": {}})
                 entry_data["pos"].setdefault(entry["pos"], definitions)
 
             except KeyError:
                 continue
 
-    valid_json= {"words": valid, "entries": valid_data}
-    target_json= {"words": list(lemmas.values()), "entries": target_data}
+    valid_json= valid_data
+    target_json= target
     json_data = json.dumps(valid_json)
     with open(valid_json_path, "w", encoding="utf-8") as outfile:
         outfile.write(json_data)
@@ -93,7 +93,7 @@ def main():
         package_name = 'it_core_news_sm'
         target_json_path = "language_learndle/src/store/italian_target.json"
         valid_json_path = "language_learndle/src/store/italian_valid.json"
-        dict_path = "coming soon"
+        dict_path = "data_processing/dictionaries/it-extract.jsonl"
     else:
         most_common_path = "Wrong language, I must crash"
         package_name = "You already crashed"
