@@ -5,7 +5,7 @@ import EN_VALID from "./english_valid.json";
 import EN_TARGET from "./english_target.json";
 
 type Pos = "adj" | "noun" | "verb" | "adv";
-type WordEntry = {pos: Partial<Record<Pos, string[]>>};
+type WordEntry = {pos: Partial<Record<Pos, string>>};
 type WordData = Record<string, WordEntry>;
 const validData: WordData = EN_VALID as WordData;
 
@@ -98,8 +98,14 @@ export function isValidWord(word: string): boolean {
     return Object.hasOwn(validData, word);
 }
 
-export function getDefinitions(word: string): WordEntry | undefined {
-    return validData[word];
+export function getDefinitions(word: string): Definition[] {
+    const key = word.toLowerCase();
+    if (!isValidWord(key)) return [];
+    const entry = validData[key];
+    return POS_ORDER.flatMap((pos) => {
+       const text = entry.pos[pos];
+       return text === undefined ? [] : [{pos, text}];
+    });
 }
 
 function pickTarget(index: number) {
