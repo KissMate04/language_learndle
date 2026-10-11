@@ -38,10 +38,14 @@ def lemmatize(wordlist, package):
             lemmatized_words[word] = doc[0].lemma_
     return lemmatized_words
 
-def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
-    # Working with the sets is faster. Maybe
+def get_definitions(lemmas, dict_path):
+    """
+    Get definitions for a list of lemmatized words from a dictionary file.
+    :param lemmas: A list of lemmatized words
+    :param dict_path: Path to the dictionary file (simple-extract.jsonl)
+    :return: A dictionary of words and their definitions
+    """
     lemmas_wanted = set(lemmas.values())
-    valid = []
     valid_data = {}
     target = []
     useful_pos = ["noun", "verb", "adj", "adv"]
@@ -70,7 +74,10 @@ def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
             except KeyError:
                 continue
 
-    valid_json= valid_data
+    return valid_data, target
+
+def json_builder(valid, target, valid_json_path, target_json_path):
+    valid_json= valid
     target_json= target
     json_data = json.dumps(valid_json)
     with open(valid_json_path, "w", encoding="utf-8") as outfile:
@@ -82,30 +89,20 @@ def json_builder(lemmas, valid_json_path, target_json_path, dict_path):
 
 def main():
     language = input("Enter the language (en/it): ")
-    if language == "en":
-        most_common_path = 'data_processing/rawdata/english-most-common-words.csv'
-        package_name = 'en_core_web_sm'
-        target_json_path = "language_learndle/src/store/english_target.json"
-        valid_json_path = "language_learndle/src/store/english_valid.json"
-        dict_path = "data_processing/dictionaries/simple-extract.jsonl"
-    elif language == "it":
-        most_common_path = 'data_processing/rawdata/italian-most-common-words.csv'
-        package_name = 'it_core_news_sm'
-        target_json_path = "language_learndle/src/store/italian_target.json"
-        valid_json_path = "language_learndle/src/store/italian_valid.json"
-        dict_path = "data_processing/dictionaries/it-extract.jsonl"
-    else:
-        most_common_path = "Wrong language, I must crash"
-        package_name = "You already crashed"
-        target_json_path = "Why are you reading these?"
-        valid_json_path = "Just go back and pick another language"
-        dict_path = "No dictionary for you"
+    if language != "en":
+        print("Language not supported yet.")
+        return
+    most_common_path = 'data_processing/rawdata/english-most-common-words.csv'
+    package_name = 'en_core_web_sm'
+    target_json_path = "language_learndle/src/store/english_target.json"
+    valid_json_path = "language_learndle/src/store/english_valid.json"
+    dict_path = "data_processing/dictionaries/simple-extract.jsonl"
 
     most_common_words = get_words_from_csv(most_common_path)
     print("--- Number of accepted target words: ",len(most_common_words)," ---")
     lemmas = lemmatize(most_common_words, package_name)
-    print("--- lemmatization complete ---")
-    json_builder(lemmas, valid_json_path, target_json_path, dict_path)
+    print("--- lemmatization complete. len: ", len(lemmas)," ---")
+    json_builder(*get_definitions(lemmas, dict_path), valid_json_path, target_json_path)
     print("--- json files created ---")
 
 if __name__ == "__main__":
