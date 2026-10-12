@@ -7,7 +7,7 @@ import EN_TARGET from "./english_target.json";
 type Pos = "adj" | "noun" | "verb" | "adv";
 type WordEntry = {pos: Partial<Record<Pos, string>>};
 type WordData = Record<string, WordEntry>;
-const validData: WordData = EN_VALID as WordData;
+const validData: WordData = EN_VALID as unknown as WordData;
 
 
 export const MAX_GUESSES = 6;
