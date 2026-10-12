@@ -11,7 +11,7 @@ function App() {
 
     const dispatch = useDispatch();
     const statusText = useAppSelector((s) => s.game.statusText);
-    const target = useAppSelector((s) => s.game.target);
+    //const target = useAppSelector((s) => s.game.target);
 
     useEffect(() => {
         if (!statusText) return;
