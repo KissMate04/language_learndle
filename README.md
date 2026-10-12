@@ -5,7 +5,7 @@ Language Learndle is a Wordle-style word guessing game built with React + TypeSc
 ## Work In Progress
 As of now the game only supports English words and definitions. The UI and extra features are also rudimentary
 
-### Current working version deployed at: [https://KissMate04.github.io/language_Learndle](https://KissMate04.github.io/language_Learndle)
+### Current working version deployed at: [https://KissMate04.github.io/language_learndle](https://KissMate04.github.io/language_learndle)
 
 ## Features
 
